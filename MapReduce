@@ -1,0 +1,96 @@
+CREATE EXTERNAL TABLE airlines_delay(
+  Year INT,
+  Month INT,
+  DayofMonth INT,
+  DayOfWeek INT,
+  DepTime INT,
+  CRSDepTime INT,
+  ArrTime INT,
+  CRSArrTime INT,
+  UniqueCarrier STRING,
+  FlightNum STRING,
+  TailNum STRING,
+  ActualElapsedTime INT,
+  CRSElapsedTime INT,
+  AirTime INT,
+  ArrDelay INT,
+  DepDelay INT,
+  Origin STRING,
+  Dest STRING,
+  Distance INT,
+  TaxiIn INT,
+  TaxiOut INT,
+  Cancelled INT,
+  CancellationCode STRING,
+  Diverted INT,
+  CarrierDelay INT,
+  WeatherDelay INT,
+  NASDe…
+(
+  Year INT,
+  Month INT,
+  DayofMonth INT,
+  DayOfWeek INT,
+  DepTime INT,
+  CRSDepTime INT,
+  ArrTime INT,
+  CRSArrTime INT,
+  UniqueCarrier STRING,
+  FlightNum STRING,
+  TailNum STRING,
+  ActualElapsedTime INT,
+  CRSElapsedTime INT,
+  AirTime INT,
+  ArrDelay INT,
+  DepDelay INT,
+  Origin STRING,
+  Dest STRING,
+  Distance INT,
+  TaxiIn INT,
+  TaxiOut INT,
+  Cancelled INT,
+  CancellationCode STRING,
+  Diverted INT,
+  CarrierDelay INT,
+  WeatherDelay INT,
+  NASDelay INT,
+  SecurityDelay INT,
+  LateAircraftDelay INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 's3://myflightdelay/';
+
+
+
+
+SELECT Year, SUM(CarrierDelay) as TotalCarrierDelay
+FROM airlines_delay
+WHERE Year >= 2003 AND Year <= 2010 AND CarrierDelay > 0
+GROUP BY Year
+ORDER BY Year ASC;
+
+SELECT Year, SUM(NASDelay) as TotalNASDelay
+FROM airlines_delay
+WHERE Year >= 2003 AND Year <= 2010 AND NASDelay > 0
+GROUP BY Year
+ORDER BY Year ASC;
+
+SELECT Year, SUM(WeatherDelay) as TotalWeatherDelay
+FROM airlines_delay
+WHERE Year >= 2003 AND Year <= 2010 AND WeatherDelay > 0
+GROUP BY Year
+ORDER BY Year ASC;
+
+SELECT Year, SUM(LateAircraftDelay) as TotalLateAircraftDelay
+FROM airlines_delay
+WHERE Year >= 2003 AND Year <= 2010 AND LateAircraftDelay > 0
+GROUP BY Year
+ORDER BY Year ASC;
+
+SELECT Year, SUM(SecurityDelay) as TotalSecurityDelay
+FROM airlines_delay
+WHERE Year >= 2003 AND Year <= 2010 AND SecurityDelay > 0
+GROUP BY Year
+ORDER BY Year ASC;
