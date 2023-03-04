@@ -1,0 +1,20 @@
+import org.apache.spark.sql.{SparkSession, SQLContext}
+
+val spark = SparkSession.builder.appName("AirlinesDelayAnalysis").getOrCreate()
+val sc = spark.sparkContext
+val sqlContext = new SQLContext(sc)
+
+val airlinesDF = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("s3://myflightdelay/DelayedFlights-updated.csv")
+
+airlinesDF.createOrReplaceTempView("airlines")
+
+val result = sqlContext.sql("SELECT Year, avg((CarrierDelay /ArrDelay)*100) from airlines GROUP BY Year ORDER BY Year").show()
+
+val result = sqlContext.sql("SELECT Year, SUM(NASDelay) AS NASDelay FROM airlines WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year").show()
+
+val result = sqlContext.sql("SELECT Year, SUM(WeatherDelay) AS WeatherDelay FROM airlines WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year").show()
+
+val result = sqlContext.sql("SELECT Year, SUM(LateAircraftDelay) AS LateAircraftDelay FROM airlines WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year").show()
+
+val result = sqlContext.sql("SELECT Year, SUM(SecurityDelay) AS SecurityDelay FROM airlines WHERE Year BETWEEN 2003 AND 2010 GROUP BY Year ORDER BY Year").show()
+
